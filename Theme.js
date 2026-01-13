@@ -32,7 +32,7 @@ const themeLight = {
         background: '#F3F4F6',
         toolbarBorder: '#cbd5e1',
         drawerBackground: '#F3F4F6',
-        drawerText: '#1890ff',
+        drawerText: '#e31e24',
         drawerBorder: '#cbd5e1',
         statusBar: '#eee',
         activityIndicator: '#334155',

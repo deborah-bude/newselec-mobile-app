@@ -727,8 +727,8 @@ function UnaToolbar(o) {
                 )}
                 
                 {!o.title || TITLE == o.title || o.loading ? (<View>
-                    {/*<Image alt="Logo" style={styles.headerImage} source={require('./img/logo.png')} />*/}
-                    <Icons.Logo size={75} />
+                    <Image alt="Logo" style={styles.headerImage} source={require('./img/logo.png')} />
+                    {/*<Icons.Logo size={75} />*/}
                 </View>) : (
                     <Text color={useTheme('colors.textOnPrimary')} numberOfLines={1} ellipsizeMode="tail" style={styles.headerTitle}>{o.title}</Text>
                 )}
@@ -772,12 +772,12 @@ function UnaDrawer(o) {
                         <Text fontSize="md" color={useTheme('colors.drawerText')} style={styles.drawerButtonText}>Login</Text>
                     </HStack>
                 </Pressable>
-                <Pressable style={styles.drawerButton} iconLeft transparent onPress={o.onJoin}>
+                {/*<Pressable style={styles.drawerButton} iconLeft transparent onPress={o.onJoin}>
                     <HStack>
                         <Icons.PlusCircle size="md" color={useTheme('colors.drawerText')} style={styles.drawerButtonIcon} />
                         <Text fontSize="md" color={useTheme('colors.drawerText')} style={styles.drawerButtonText}>Join</Text>
                     </HStack>
-                </Pressable>
+                </Pressable>*/}
                 <Pressable style={styles.drawerButton} iconLeft transparent onPress={o.onForotPassword}>
                     <HStack>
                         <Icons.Question size="md" color={useTheme('colors.drawerText')} style={styles.drawerButtonIcon} />
