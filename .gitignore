@@ -67,3 +67,4 @@ buck-out/
 \.buckd/
 *.keystore
 !debug.keystore
+/android/app/release/
