@@ -45,3 +45,7 @@
 -keepattributes *Annotation*
 -keepattributes Signature
 -keepattributes Exceptions
+
+# react-native-svg
+-keep public class com.horcrux.svg.** {*;}
+-dontwarn com.horcrux.svg.**

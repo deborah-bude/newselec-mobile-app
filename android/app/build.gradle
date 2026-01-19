@@ -98,8 +98,8 @@ android {
         applicationId "com.newselec.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2102
-        versionName "2.1.2"
+        versionCode 2103
+        versionName "2.1.3"
     }
 
     splits {
