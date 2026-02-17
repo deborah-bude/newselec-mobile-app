@@ -7,7 +7,7 @@
  */
 
 import React, { Component } from 'react';
-import OneSignal from 'react-native-onesignal';
+import { OneSignal } from 'react-native-onesignal';
 import SplashScreen from 'react-native-splash-screen';
 import { WebView } from 'react-native-webview';
 import {
@@ -431,26 +431,22 @@ export default class App extends Component<Props> {
             }
         });
 
-        OneSignal.setLogLevel(6, 0);
-        OneSignal.setAppId(ONESIGNALAPPID);
-        OneSignal.promptForPushNotificationsWithUserResponse(response => {
-            console.log("OneSignal Prompt response:", response);
-        });
-        OneSignal.setNotificationWillShowInForegroundHandler(notificationReceivedEvent => {
+        OneSignal.Debug.setLogLevel(6);
+        OneSignal.initialize(ONESIGNALAPPID);
+        OneSignal.Notifications.requestPermission(true);
+        OneSignal.Notifications.addEventListener('foregroundWillDisplay', notificationReceivedEvent => {
             console.log("OneSignal: notification in foreground:", notificationReceivedEvent);
         });
-
-        OneSignal.setNotificationOpenedHandler(openResult => {
+        OneSignal.Notifications.addEventListener('click', openResult => {
             console.log("OneSignal: notification opened:", openResult);
 
             if ('undefined' !== typeof(openResult.notification.additionalData) && 'undefined' !== typeof(openResult.notification.additionalData.url)) {
                 this.injectJavaScript(`window.location = '${openResult.notification.additionalData.url}';`);
-            }            
+            }
         });
 
-        const deviceState = await OneSignal.getDeviceState();
         this.setState({
-            isSubscribed : deviceState.isSubscribed
+            isSubscribed: OneSignal.User.pushSubscription.optedIn
         });
 
         if (Platform.OS === 'android') {
@@ -559,18 +555,15 @@ export default class App extends Component<Props> {
 
             if ('undefined' !== typeof(oMsgData['push_tags']['user']) && oMsgData['push_tags']['user'].length) {
                 console.log('User ID: ' + JSON.stringify(oMsgData['push_tags']['user']));
-                OneSignal.setExternalUserId(oMsgData['push_tags']['user']);
+                OneSignal.login(oMsgData['push_tags']['user']);
             }
 
             if ('undefined' !== typeof(oMsgData['push_tags']['email']) && oMsgData['push_tags']['email'].length) {
-                OneSignal.setEmail(oMsgData['push_tags']['email'], oMsgData['push_tags']['email_hash'], (sError) => {
-                    if ('undefined' !== typeof(sError))
-                        console.warn("OneSignal set email error: " + sError);
-                });
+                OneSignal.User.addEmail(oMsgData['push_tags']['email']);
                 delete oMsgData['push_tags']['email'];
                 delete oMsgData['push_tags']['email_hash'];
             }
-            OneSignal.sendTags(oMsgData['push_tags']);
+            OneSignal.User.addTags(oMsgData['push_tags']);
         }
 
         if ('undefined' !== typeof(oMsgData['stop_loading']) && oMsgData['stop_loading']) {
