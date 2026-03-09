@@ -430,24 +430,25 @@ export default class App extends Component<Props> {
                 });
             }
         });
+        //if (ONESIGNALAPPID && ONESIGNALAPPID.length > 0) {
+            OneSignal.Debug.setLogLevel(6);
+            OneSignal.initialize(ONESIGNALAPPID);
+            OneSignal.Notifications.requestPermission(true);
+            OneSignal.Notifications.addEventListener('foregroundWillDisplay', notificationReceivedEvent => {
+                console.log("OneSignal: notification in foreground:", notificationReceivedEvent);
+            });
+            OneSignal.Notifications.addEventListener('click', openResult => {
+                console.log("OneSignal: notification opened:", openResult);
 
-        OneSignal.Debug.setLogLevel(6);
-        OneSignal.initialize(ONESIGNALAPPID);
-        OneSignal.Notifications.requestPermission(true);
-        OneSignal.Notifications.addEventListener('foregroundWillDisplay', notificationReceivedEvent => {
-            console.log("OneSignal: notification in foreground:", notificationReceivedEvent);
-        });
-        OneSignal.Notifications.addEventListener('click', openResult => {
-            console.log("OneSignal: notification opened:", openResult);
+                if ('undefined' !== typeof(openResult.notification.additionalData) && 'undefined' !== typeof(openResult.notification.additionalData.url)) {
+                    this.injectJavaScript(`window.location = '${openResult.notification.additionalData.url}';`);
+                }
+            });
 
-            if ('undefined' !== typeof(openResult.notification.additionalData) && 'undefined' !== typeof(openResult.notification.additionalData.url)) {
-                this.injectJavaScript(`window.location = '${openResult.notification.additionalData.url}';`);
-            }
-        });
-
-        this.setState({
-            isSubscribed: OneSignal.User.pushSubscription.optedIn
-        });
+            this.setState({
+                isSubscribed: OneSignal.User.pushSubscription.optedIn
+            });
+        //}
 
         if (Platform.OS === 'android') {
             this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -459,7 +460,7 @@ export default class App extends Component<Props> {
                     return false;
                 }
             });
-        }        
+        }
 /*
         if (PAYMENTS_CALLBACK != '') {
             var _self = this;
@@ -499,14 +500,14 @@ export default class App extends Component<Props> {
                             original_data: oPurchaseData,
                         })
                     });
-    
+
                     if ('ios' === Platform.OS)
                         RNIap.finishTransactionIOS(sTxId);
                 }
             });
             purchaseErrorSubscription = purchaseErrorListener((error: PurchaseError) => {
                 console.log('purchaseErrorListener', error);
-            }); 
+            });
         }
 */
         if (Platform.OS === 'android')
@@ -514,7 +515,7 @@ export default class App extends Component<Props> {
 
         SplashScreen.hide();
     }
-    
+
     componentWillUnmount() {
 
         if (this.purchaseUpdateSubscription) {
@@ -530,7 +531,7 @@ export default class App extends Component<Props> {
             this.backHandler.remove();
         }
     }
-        
+
     onWebViewMessage(event) {
 
         let oMsgData;
